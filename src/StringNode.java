@@ -1,10 +1,4 @@
-package StarterFiles;
-/*
- * StringNode.java
- *
- * Computer Science E-22
- * Modified by: Kevin Trosinski, krtrosinski@gmail.com
- */
+
 
 import java.io.*;
 import java.util.*;
@@ -36,14 +30,16 @@ public class StringNode {
      * node i in the given linked-list string.  If the string is too
      * short, returns null.
      */
-    //TODO ITERATIVE
     private static StringNode getNode(StringNode str, int i) {
-        if (i < 0 || str == null)
+    	if (i < 0 || str == null)
             return null;
-        else if (i == 0)
-            return str;
-        else
-            return getNode(str.next, i-1);
+    	for (int j = 0; j < i; j++)
+    	{
+    		str = str.next;
+    	}
+    	
+    	return str;
+    	
     }
 
     /*****************************************************
@@ -71,30 +67,34 @@ public class StringNode {
     /**
      * concat - returns the concatenation of two linked-list strings
      */
-  //TODO ITERATIVE
     public static StringNode concat(StringNode str1, StringNode str2) {
-        StringNode cat;
-
-        if (str1 == null)
-            cat = copy(str2);
-        else 
-            cat = new StringNode(str1.ch, concat(str1.next, str2));
-
-        return cat;
+    	StringNode cat = copy(str1);
+    	StringNode temp = cat;
+    	
+    	while (temp.next != null)
+    	{
+    		temp = temp.next;
+    	}
+    	
+    	temp.next = copy(str2);
+    	
+    	return cat;
     }
     
     /**
      * contains - returns true if the linked-list string str contains
      * at least one occurrence of the character ch, and false otherwise.
      */
-  //TODO ITERATIVE
     public static boolean contains(StringNode str, char ch) {
-        if (str == null)
-            return false;
-        if (str.ch == ch)
-            return true;
-        else
-            return contains(str.next, ch);
+    	
+    	while (str != null)
+    	{
+    		if (str.ch == ch) return true;
+    		str = str.next;
+    	};
+    	
+    	return false;
+    	
     }
 
     /**
@@ -121,13 +121,22 @@ public class StringNode {
     /**
      * copy - returns a copy of the given linked-list string
      */
-  //TODO ITERATIVE
     public static StringNode copy(StringNode str) {
-        if (str == null)
-            return null;
-
-        StringNode copyFirst = new StringNode(str.ch, null);
-        copyFirst.next = copy(str.next);
+    	if (str == null)
+    		return null;
+    	
+    	StringNode copyFirst = new StringNode(str.ch, null);
+    	StringNode temp = copyFirst;
+    	str = str.next;
+    	
+    	while (str != null)
+    	{
+    		StringNode next = new StringNode(str.ch, null);
+    		temp.next = next;
+    		temp = next;
+    		str = str.next;
+    	}
+    	
         return copyFirst;
     }
 
@@ -159,17 +168,17 @@ public class StringNode {
      * none, returns -1.
      */
     public static int indexOf(StringNode str, char ch) {
-        if (str == null)         // base case 1: ch wasn't found
-            return -1;
-        else if (str.ch == ch)   // base case 2: ch was just found
-            return 0;           
-        else {
-            int indexInRest = indexOf(str.next, ch);
-            if (indexInRest == -1)
-                return -1;
-            else 
-                return 1 + indexInRest;
-        }
+    	int count = 0;
+    	
+    	while (str != null)
+    	{
+    		if (str.ch == ch) return count;
+    		str = str.next;
+    		count++;
+    	};
+    	
+    	return -1;
+    	
     }
 
     /**
@@ -232,24 +241,33 @@ public class StringNode {
     public static int length(StringNode str) {
         if (str == null)
             return  0;
-        else
-            return 1 + length(str.next);
+        
+        int length = 1;
+        
+        while (str.next != null)
+        {
+        	str = str.next;
+        	length++;
+        }
+        
+        return length;
     }
 
     /**
      * numOccurrences - find the number of occurrences of the character
      * ch in the linked list to which str refers
      */
-  //TODO ITERATIVE
     public static int numOccurrences(StringNode str, char ch) {
-    	//sdfsd
-        if (str == null)
-            return 0;
-     
-        int numOccur = numOccurrences(str.next, ch);
-        if (str.ch == ch)
-            numOccur++;
-        
+    	int numOccur = 0;
+        StringNode trav = str;
+
+        while (trav != null) {
+            if (trav.ch == ch)
+                numOccur++;
+
+            trav = trav.next;
+        }
+
         return numOccur;
     }
 
@@ -257,11 +275,10 @@ public class StringNode {
      * print - recursively writes the specified linked-list string to System.out
      */
     public static void print(StringNode str) {
-        if (str == null)
-            return;
-        else {
-            System.out.print(str.ch);
-            print(str.next);
+        while (str != null)
+        {
+        	System.out.print(str.ch);
+        	str = str.next;
         }
     }
 
@@ -270,12 +287,46 @@ public class StringNode {
      * linked-list string to System.out
      */
     public static void printReverse(StringNode str) {
-        if (str == null)
+        if (str == null || str.next == null)
             return;
-        else {
-            printReverse(str.next);
-            System.out.print(str.ch);
+        
+        str = reverse(str);
+        
+        StringNode temp = str;
+        while (temp != null)
+        {
+        	System.out.print(temp.ch);
+        	temp = temp.next;
         }
+        
+        reverse(str);
+        
+    }
+    
+    /**
+     * This method will reverse a linked list.
+     * @param str Head of the linked list to reverse
+     * @return The head of the new linked list
+     */
+    private static StringNode reverse(StringNode str) {
+    	StringNode second = str.next;
+        StringNode current = second.next;
+        StringNode next;
+        StringNode prev = second;
+        
+        str.next = null;
+        second.next = str;
+        
+        while (current != null)
+        {
+        	next = current.next;
+        	current.next = prev;
+        	prev = current;
+        	current = next;
+        	
+        }
+        
+        return prev;
     }
     
     /**
@@ -283,14 +334,23 @@ public class StringNode {
      * reference to a linked list containing the characters in the string
      */
     public static StringNode read(InputStream in) throws IOException {
-        StringNode str; 
+    	StringNode str = null;
+        StringNode current;
         char ch = (char)in.read();
 
-        if (ch == '\n')    // base case
-            str = null;         
-        else
-            str = new StringNode(ch, read(in));
-    
+        if (ch != '\n') {
+            current = new StringNode(ch, null); // create the initial node
+            str = current;                      // we will return it
+
+            ch = (char)in.read();               // read next character
+            while (ch != '\n') {
+                current.next = new StringNode(ch, null);
+                current = current.next;
+
+                ch = (char)in.read();
+            }
+        }
+
         return str;
     }
     
@@ -319,13 +379,79 @@ public class StringNode {
      * linked-list string to upper case.  Modifies the list itself,
      * rather than creating a new list.
      */
-    public static void toUpperCase(StringNode str) {        
-        StringNode trav = str; 
-        while (trav != null) {
-            trav.ch = Character.toUpperCase(trav.ch); 
-            trav = trav.next;
-        }
+    public static void toUpperCase(StringNode str) {  
+    	while (str != null) {
+    		str.ch = Character.toUpperCase(str.ch);
+    		toUpperCase(str.next);
+    	}	
     } 
+    
+    /**
+     * This method will print the characters in the linked list forwards, and then
+     * print it again backwards.
+     * @param str The StringNode to start with
+     */
+    public static void printMirrored(StringNode str) {
+    	if (str == null) 
+    		return;
+    	System.out.print(str.ch);
+    	printMirrored(str.next);
+    	System.out.print(str.ch);
+    }
+    
+    /**
+     * This method takes the head of the linked list passed in and returns a sub segment
+     * of that linked list as a new linked list, whose bounds are given by start and end
+     * 
+     * @param str Head of the linked list
+     * @param start The start index of the sub segment
+     * @param end The end index of the sub segment
+     * @return A pointer to the head of the new sublist
+     */
+    public static StringNode substring(StringNode str, int start, int end) {
+    	if (start == end)
+    		return null;
+    	if (str == null || start < 0)
+    		throw new IllegalArgumentException();
+    	if (start == 0) 
+    	{
+    		StringNode temp = new StringNode(str.ch, null);
+    		temp.ch = str.ch;
+    		temp.next = substring(str.next, start, end - 1);
+    		return temp;
+    	}
+    	
+    	return substring(str.next, start - 1, end - 1);
+    		
+    }
+    
+    /**
+     * Returns the index of the nth time the character ch appears in str
+     * @param str Head of the linked list to search
+     * @param n How many instances of the character to find
+     * @param ch The character to look for
+     * @return The index of the nth appears of ch in str
+     */
+    public static int nthIndexOf(StringNode str, int n, char ch) {
+    	if (str == null || n <= 0)
+    		return -1;
+    	
+    	int temp = 0;
+    	
+    	if (str.ch == ch)
+    	{
+    		temp = nthIndexOf(str.next, n - 1, ch);
+    		if (temp == -1)
+    			return 0;
+    		return ++temp;
+    	}
+    	
+    	temp = nthIndexOf(str.next, n, ch);
+    	if (temp == -1)
+    		return -1;
+    	
+    	return ++temp;
+    }
               
     public static void main(String[] args) throws IOException {
         StringNode copy, str, str1, str2, str3;
@@ -334,7 +460,7 @@ public class StringNode {
         char ch;
 
         // convert, print, and toUpperCase
-        str = StringNode.convert("fine");
+        str = StringNode.convert("finen");
         System.out.print("Here's a string: "); 
         StringNode.print(str);
         System.out.println();

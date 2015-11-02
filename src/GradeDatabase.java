@@ -1,11 +1,4 @@
-package StarterFiles;
-/*
- * GradeDatabase.java
- *
- * Author:          Computer Science E-22
- * Modified by:     <your name>, <your e-mail address>
- * Date modified:   <current date>
- */
+
 
 import java.util.*;
 
@@ -45,29 +38,45 @@ public class GradeDatabase {
     }
     
     /**** add your instance variables here ****/
-    
+    private LLList studentTable;
+    private LLList gradeTable;
     
     
     public GradeDatabase() {
         /** complete the constructor below **/
-        
+        studentTable = new LLList();
+        gradeTable = new LLList();
         
     }
     
     /**
      * addStudent - add a record for the student with the specified information
+     * This will always add the new item to the beginning of the list, giving a time
+     * efficiency of O(1).
+     * 
+     * Adding in this way allows for very fast updates to the tables. Since it is likely
+     * that grades will be entered much more frequently than reports will be run, it
+     * will generate much less frustration for users who are actively entering grades,
+     * as opposed to running reports which may only occur a dozen times a year, at most.
      */
     public void addStudent(int id, String last, String first) {
-        /* complete the method below */
-        
+    	StudentRecord sRecord = new StudentRecord(id, last, first);
+        studentTable.addItem(sRecord, 0);
     }
     
     /**
      * addGrade - add a record for the grade entry with the specified details
+     * This will always add the new item to the beginning of the list, giving a time
+     * efficiency of O(1).
+     * 
+     * Adding in this way allows for very fast updates to the tables. Since it is likely
+     * that grades will be entered much more frequently than reports will be run, it
+     * will generate much less frustration for users who are actively entering grades,
+     * as opposed to running reports which may only occur a dozen times a year, at most.
      */
     public void addGrade(int id, String asst, int grade) {
-        /* complete the method below */
-        
+        GradeRecord gRecord = new GradeRecord(id, asst, grade);
+        gradeTable.addItem(gRecord, 0);
     }
     
     /**
@@ -78,7 +87,15 @@ public class GradeDatabase {
         System.out.println("id\tlast\t\tfirst");
         System.out.println("--------------------------------------------");
         
-        /* complete the method below */
+        StudentRecord sRecord;
+        for (int i = 0; i < studentTable.length(); i++)
+        {
+        	sRecord = (StudentRecord) studentTable.getItem(i);
+        	System.out.printf("%d\t%s\t\t%s\n",
+        			sRecord.id,
+        			sRecord.lastName,
+        			sRecord.firstName);
+        }
         
     }
     
@@ -90,20 +107,77 @@ public class GradeDatabase {
         System.out.println("id\tassignment\tgrade");
         System.out.println("--------------------------------------------");
         
-        /* complete the method below */
+        GradeRecord gRecord;
+        for (int i = 0; i < gradeTable.length(); i++)
+        {
+        	gRecord = (GradeRecord) gradeTable.getItem(i);
+        	System.out.printf("%d\t%s\t%d\n",
+        			gRecord.studentID,
+        			gRecord.assignment,
+        			gRecord.grade);
+        }
         
     }
     
     /**
      * printStudentsGrades - print a "join" of the student and grade
      * tables.  See the problem set handout for more details.
+     * 
+     * This method is not very time efficient due to the way in which items are added to
+     * the tables. In order to allow for fast updates, items are added to the tables in
+     * the order that they are entered and are not sorted in any way when added. This
+     * sacrifices efficiency in printing for constant time efficiency in making updates.
+     * Users will generally be making many more updates to the tables over the course of
+     * their work, so slowness in making updates will be more frustrating to a user that
+     * has to be active during the process. When printing a report, however, it can be
+     * started and then the user can walk away while it compiles. This, it would make
+     * sense for adding to the tables to be more efficient at the cost of efficiency
+     * when printing.
      */
     public void printStudentsGrades() {
         System.out.println();
         System.out.println("last\t\tfirst\tassignment\tgrade");
         System.out.println("------------------------------------------------");
         
-        /* complete the method below */
+        StudentRecord sRecord;
+        GradeRecord gRecord;
+        ListIterator sIter = studentTable.iterator();
+        
+        while (sIter.hasNext())
+        {
+        	sRecord = (StudentRecord) sIter.next();
+        	ListIterator gIter = gradeTable.iterator();
+        	while (gIter.hasNext())
+        	{
+        		gRecord = (GradeRecord) gIter.next();
+        		if (sRecord.id == gRecord.studentID) {
+        			System.out.printf("%s\t\t%s\t%s\t%d\n",
+        					sRecord.lastName,
+        					sRecord.firstName,
+        					gRecord.assignment,
+        					gRecord.grade);
+        		}
+        	}
+        }
+        
+        /*
+        for (int i = 0; i < studentTable.length(); i++)
+        {
+        	sRecord = (StudentRecord) studentTable.getItem(i);
+        	for (int j = 0; j < gradeTable.length(); j++) 
+        	{
+        		gRecord = (GradeRecord) gradeTable.getItem(j);
+        		if (sRecord.id == gRecord.studentID) 
+        		{
+        			System.out.printf("%s\t\t%s\t%s\t%d\n",
+        					sRecord.lastName,
+        					sRecord.firstName,
+        					gRecord.assignment,
+        					gRecord.grade);
+        		}
+        	}
+        }
+        */
         
     }
     
