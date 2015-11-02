@@ -1,11 +1,4 @@
-package StarterFiles;
-/*
- * GradeDatabase.java
- *
- * Author:          Computer Science E-22
- * Modified by:     <your name>, <your e-mail address>
- * Date modified:   <current date>
- */
+
 
 import java.util.*;
 

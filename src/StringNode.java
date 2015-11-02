@@ -1,10 +1,4 @@
-package StarterFiles;
-/*
- * StringNode.java
- *
- * Computer Science E-22
- * Modified by: Kevin Trosinski, krtrosinski@gmail.com
- */
+
 
 import java.io.*;
 import java.util.*;
